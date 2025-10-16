@@ -1,14 +1,11 @@
+// routes/personaRoutes.js
 const express = require('express')
 const router = express.Router()
 const personaController = require('../controllers/personaController')
 const {upload} = require('../middleware')
 
-
-//LEER
+// Rutas
 router.get('/', personaController.obtenerTodas)
-
-//CREAR => BINARIO
-//fotografia = name (frontend)
-router.post('/',upload.single('fotografia'), personaController.crear)
+router.post('/', personaController.crear)
 
 module.exports = router
