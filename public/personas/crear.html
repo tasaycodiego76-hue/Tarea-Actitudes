@@ -22,7 +22,7 @@
       <div class="row">
         <div class="col-md-12">
           <!-- FORMULARIO DE REGISTRO -->
-          <form id="formPersona">
+          <form id="formulario-registro">
             <div class="card">
               <div class="card-header">
                 <strong>Completa el Formulario</strong>
@@ -81,64 +81,55 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-  const API_URL = 'http://localhost:3000/api/personas';
-  const form = document.querySelector('#formPersona');
+  document.addEventListener("DOMContentLoaded", () => {
+    
+    const API_URL = 'http://localhost:3000/api/personas';
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+    const formulario = document.getElementById('formulario-registro');
+    const apellidos = document.getElementById("apellidos");
+    const nombres = document.getElementById("nombres");
+    const dni = document.getElementById("dni");
+    const telefono = document.getElementById("telefono");
 
-    // Obtener los valores del formulario
-    const data = {
-      nombres: document.querySelector('#nombres').value,
-      apellidos: document.querySelector('#apellidos').value,
-      dni: document.querySelector('#dni').value,
-      telefono: document.querySelector('#telefono').value
-    };
+    async function guardarDatos(){
+      const data = {
+        apellidos: apellidos.value,
+        nombres: nombres.value,
+        dni: dni.value,
+        telefono: telefono.value,
+        fotografia: "foto.jpg"
+      };
 
-    try {
       const response = await fetch(API_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
       });
 
       const result = await response.json();
-
-      if (response.ok) {
-        Swal.fire({
-          title: 'Persona registrada correctamente',
-          text: 'El registro se ha guardado con éxito.',
-          icon: 'success',
-          confirmButtonText: 'Aceptar',
-          draggable: true
-        });
-
-        form.reset();
-      } else {
-        Swal.fire({
-          title: 'Error al registrar',
-          text: result.error || 'Ver consola',
-          icon: 'error',
-          confirmButtonText: 'Aceptar',
-          draggable: true
-        });
-        console.error(result);
-      }
-
-    } catch (error) {
-      console.error('Error en la conexión:', error);
-      Swal.fire({
-        title: 'Error en la conexión',
-        text: 'No se pudo conectar con el servidor',
-        icon: 'error',
-        confirmButtonText: 'Aceptar',
-        draggable: true
-      });
+      console.log(result);
     }
+
+    formulario.addEventListener("submit", (event) =>{
+      event.preventDefault(); //Cancelacion de evento
+
+      Swal.fire({
+        text: "Registro de personas",
+        title: "¿Seguro de guardar?",
+        icon: "question",
+        confirmButtonText: "Aceptar",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        if (result.isConfirmed){
+          console.log("Guardando datos...");
+          guardarDatos(); 
+        }
+      });
+    });
   });
 </script>
+
 
 </body>
 </html>

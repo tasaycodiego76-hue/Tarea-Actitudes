@@ -6,6 +6,7 @@ const {upload} = require('../middleware')
 
 // Rutas
 router.get('/', personaController.obtenerTodas)
+//router.get('/', upload.single('fotografia'), personaController.crear)
 router.post('/', personaController.crear)
 
 module.exports = router

@@ -40,8 +40,11 @@ const crear = async (req, res) => {
       message: 'Registro correcto'
     })
   } catch (e) {
-    console.error(e)
-    res.status(500).json({ error: 'Error al registrar persona' })
+    //console.error(e)
+    if (e.code === "ER_DUP_ENTRY"){
+      return res.status(400).json({error: 'DNI está duplicado'})
+    }
+    res.status(500).json({error: 'Error en el proceso registro'})
   }
 }
 
