@@ -1,6 +1,4 @@
 const express = require('express')
-
-//Actualización para desplegar el FRONT-END
 const cors = require('cors') //Permisos sobre el contenido a desplegar
 const path = require('path') //Express servir el frontend
 
