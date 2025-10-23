@@ -1,44 +1,41 @@
-//Gestionar los archivos binarios => jpg, png, pdf, mp3
-//Node > "multer"
-const multer = require("multer")
-const path = require("path")
+//Configuración de multer
+const multer = require('multer')
+const path = require('path')
 
-const uploadDir = "./public/uploads"
+const uploadDir = './public/uploads'
 
-//Gestion de escritura (¿Dónde se guardaran?)
+//Configuración de almacenamiento de Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir)
   },
   filename: (req, file, cb) => {
-    //NOTA: No podemos guardar el archivo con el nombre original
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9) //Sufijo único
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
     cb(null, 'foto-' + uniqueSuffix + path.extname(file.originalname))
   }
 })
 
-//Filtro (¿que tipo de archivos está permitido)
+//Filtro de archivos, permitir solo imágenes
 const fileFilter = (req, file, cb) => {
   //Expresión regular
-  const allowedTypes = /jpej|jpg|png|gif|webp/
+  const allowedTypes = /jpeg|jpg|png|gif|webp/
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase())
   const mimeType = allowedTypes.test(file.mimetype)
 
-  //Si la extensión es correcta, podemos GRABAR el archivo
   if (mimeType && extname){
     return cb(null, true)
   }else{
-    cb(new Error('Solo se permiten extensiones de imágenes'))
+    cb(new Error(`Solo se permiten imágenes (jpeg, jpg, png, gif, webp)`))
   }
 }
 
-//Configuración "multer"
-//* 1024 (Lb) * 1024 (Mb)
+//Configuración de Multer
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: {
+    fileSize: 5 * 1024 * 1024
+  },
   fileFilter: fileFilter
 })
 
-//Exportar
 module.exports = { upload }

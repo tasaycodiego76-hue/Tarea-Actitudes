@@ -1,12 +1,12 @@
-// routes/personaRoutes.js
 const express = require('express')
 const router = express.Router()
 const personaController = require('../controllers/personaController')
-const {upload} = require('../middleware')
+const { upload } = require('../middleware')
 
-// Rutas
+// Obtener todas las personas
 router.get('/', personaController.obtenerTodas)
-//router.get('/', upload.single('fotografia'), personaController.crear)
-router.post('/', personaController.crear)
+
+// Crear una persona con foto (usa multer)
+router.post('/', upload.single('fotografia'), personaController.crear)
 
 module.exports = router

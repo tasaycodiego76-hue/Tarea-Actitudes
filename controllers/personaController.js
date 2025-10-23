@@ -2,61 +2,53 @@ const { error } = require('console')
 const db = require('../config/db')
 const path = require('path')
 
-const obtenerTodas = async (req, res) => {
-  try {
+const obtenerTodas = async (req, res) =>{
+  try{
     const sql = "SELECT * FROM personas"
-    const [rows] = await db.query(sql)
+    const [rows] = await db.query(sql) //
     res.json(rows)
-  } catch (e) {
+  }catch(e){
     console.error(e)
-    res.status(500).json({ error: 'Error en la conexión' })
+    res.status(500).json({error: 'Error en la conexión'})
   }
 }
 
-// Crear persona
+//req => require (peticion/solicitud)
+//req.params : parametro URL
+//req. file : Envpia un archivo binario
 const crear = async (req, res) => {
-  try {
-    // 1. Recibir los datos del formulario
-    const { apellidos, nombres, dni, telefono } = req.body
+  try{
+    //1. Recibir los datos del formulario(texto)
+    const{apellidos, nombres, dni, telefono} = req.body
+    //2. Recibir la fotografia
+    const fotografia = req.file ? `/uploads/${req.file.filename}` : null;
 
-    // 2. (Desactivado) Recibir la fotografía real
-    // const fotografia = req.file ? `/uploads/${req.file.filename}` : null;
+    //3. Validacion...
 
-    const fotografia = 'nueva foto.jpg' // temporal, como dijiste
+    //4. Guardar nuevo Registro
+    const[result] = await db.query("INSERT INTO personas (apellidos, nombres, dni, telefono, fotografia) VALUES (?,?,?,?,?)",
+      [apellidos, nombres, dni, telefono, fotografia])
 
-    // 3. Validaciones básicas
-    if (!apellidos || !nombres || !dni || !telefono) {
-      return res.status(400).json({ error: 'Todos los campos son obligatorios' })
-    }
+      res.status(201).json({
+        id: result.insertId,
+        message: 'Registro correcto'
+      })
 
-    // 4. Guardar nuevo registro
-    const [result] = await db.query(
-      "INSERT INTO personas (apellidos, nombres, dni, telefono, fotografia) VALUES (?,?,?,?,?)",
-      [apellidos, nombres, dni, telefono, fotografia]
-    )
+  }catch (e){
+    console.error(e)
 
-    res.status(201).json({
-      id: result.insertId,
-      message: 'Registro correcto'
-    })
-  } catch (e) {
-    //console.error(e)
-    if (e.code === "ER_DUP_ENTRY"){
-      return res.status(400).json({error: 'DNI está duplicado'})
-    }
-    res.status(500).json({error: 'Error en el proceso registro'})
   }
 }
 
-// Actualizar persona (opcional)
-const actualizar = async (req, res) => {
-
+const actualizar = async(req, res) =>{
+  //..
 }
 
-
-const eliminar = async (req, res) => {
-
+const eliminar = async(req, res) =>{
+  //...
 }
+
+//Antes de finalizar este controlador, exportador los objetos (función)
 
 module.exports = {
   obtenerTodas,
